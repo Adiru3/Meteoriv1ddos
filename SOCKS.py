@@ -452,9 +452,9 @@ def proxyget(url): # scarica proxy da altri siti
 				if ipf: # se trova ip prosegue
 					for x in ipf:
 						ipfinal = x # se lo prende ipfinal
-						out_file = open("proxy.txt","a")
+						out_file = open("socks.txt","a")
 						while True:
-							out_file.write(x+"\n") # scrive ip uno per uno nel file proxy.txt
+							out_file.write(x+"\n") # scrive ip uno per uno nel file socks.txt
 							out_file.close()
 							break # appena finisce ferma il ciclo
 	except:
@@ -476,7 +476,7 @@ def proxyget2(url): # lo dice il nome, questa funzione scarica i proxies
 				proxies=proxies + proxy[0] + ":" + proxy[1] + "\n"
 			except:
 				pass
-		out_file = open("proxy.txt","a")      # e li scrive nel file, aperto come a, per non sovrascrivere proxy gia presenti all'interno
+		out_file = open("socks.txt","a")      # e li scrive nel file, aperto come a, per non sovrascrivere proxy gia presenti all'interno
 		out_file.write(proxies)
 		out_file.close()
 	except:
@@ -495,9 +495,9 @@ def blogspotget(url, word): # anche questa funzione scarica proxy pero' dai siti
 				ip = re.findall("(?:[\d]{1,3})\.(?:[\d]{1,3})\.(?:[\d]{1,3})\.(?:[\d]{1,3}):(?:[\d]{1,5})", str(line)) # cerca gli ip:porta nelle pagine
 				if ip: # se ha trovato gli ip prosegue
 					for x in ip:
-						out_file = open("proxy.txt","a") # scrittura singolo ip nella proxy.txt
+						out_file = open("socks.txt","a") # scrittura singolo ip nella socks.txt
 						while True:
-							out_file.write(x+"\n") # scrive ip uno per uno nel file proxy.txt
+							out_file.write(x+"\n") # scrive ip uno per uno nel file socks.txt
 							out_file.close()
 							break # il ciclo si ferma non appena ha finito
 	except:
@@ -506,25 +506,25 @@ def blogspotget(url, word): # anche questa funzione scarica proxy pero' dai siti
 def proxylist(): # funzione per la creazione della proxylist
 	global proxies
 	print ("\nProverka na dublikaty ...")
-	proxies = open("proxy.txt").readlines() # la lista txt presenta doppioni, quindi:
+	proxies = open("socks.txt").readlines() # la lista txt presenta doppioni, quindi:
 	proxiesp = []
 	for i in proxies:
 		if i not in proxiesp: # se il proxy non è già presente in proxiesp
 			proxiesp.append(i) # li aggiunge in proxiesp
-	filepr = open("proxy.txt", "w") # prima cancella contenuto del file
+	filepr = open("socks.txt", "w") # prima cancella contenuto del file
 	filepr.close()
-	filepr = open("proxy.txt", "a") # dopo lo apre in modalità a per non sovrascrivere i proxy
+	filepr = open("socks.txt", "a") # dopo lo apre in modalità a per non sovrascrivere i proxy
 	for i in proxiesp:
 		filepr.write(i)             # e scrive
-	print("CIP adresa v proksiliste:%s" % (len(open("proxy.txt").readlines()))) # per vedere quante lines (e quindi quanti proxy) ci sono nel file
+	print("CIP adresa v proksiliste:%s" % (len(open("socks.txt").readlines()))) # per vedere quante lines (e quindi quanti proxy) ci sono nel file
 	print ("\nProksilist obnovlen!\n")
 
 def proxycheckerinit():
 	global out_file
-	candidate_proxies = open("proxy.txt").readlines() # vede gli attuali proxy "candidati" lol
-	filedl = open("proxy.txt", "w") # prima cancella contenuto
+	candidate_proxies = open("socks.txt").readlines() # vede gli attuali proxy "candidati" lol
+	filedl = open("socks.txt", "w") # prima cancella contenuto
 	filedl.close()
-	out_file = open("proxy.txt", "a") # e poi lo apre non in riscrivibile
+	out_file = open("socks.txt", "a") # e poi lo apre non in riscrivibile
 	threads = [] # crea una lista che ci servirà dopo
 	for i in candidate_proxies:
 		t = threading.Thread(target=proxychecker, args=[i]) # crea un thread per proxy per velocizzare
@@ -535,7 +535,7 @@ def proxycheckerinit():
 		t.join()      # questo li fa aspettare che tutti abbiano finito
 
 	out_file.close()  # chiude il file precedentemente aperto
-	print("\n\nTekushchiye IP-adresa v proksiliste: %s\n" % (len(open("proxy.txt").readlines()))) # quando finisce tutto printa la quantità di proxy FINALE
+	print("\n\nTekushchiye IP-adresa v proksiliste: %s\n" % (len(open("socks.txt").readlines()))) # quando finisce tutto printa la quantità di proxy FINALE
 
 def proxychecker(i):
 	proxy = 'http://' + i
@@ -554,24 +554,24 @@ def proxychecker(i):
 
 def main(): # funzione effettiva del programma.
 	try:
-		out_file = open("proxy.txt","w") # prima di tutto cancella il contenuto di proxy.txt
+		out_file = open("socks.txt","w") # prima di tutto cancella il contenuto di socks.txt
 		out_file.close()
 
 		print ("\nIdet zagruzka s socks-proxy.net...")
 		url = "https://www.socks-proxy.net/"
 		proxyget2(url) # manda url alla funzione
-		print("Tekushchiye IP-adresa v proksiliste: %s" % (len(open("proxy.txt").readlines()))) # printa la lunghezza attuale del file, che sarebbe il numero di proxy
+		print("Tekushchiye IP-adresa v proksiliste: %s" % (len(open("socks.txt").readlines()))) # printa la lunghezza attuale del file, che sarebbe il numero di proxy
 
 		print ("\nidet zagruzka iz bloga ... iz bloga v protsesse ...\n")
 		url = "https://2freesocks5list.blogspot.com/"
 		word = "strong"
 		blogspotget(url,word)
-		print("Tekushchiye IP-adresa v proksiliste: %s" % (len(open("proxy.txt").readlines())))
+		print("Tekushchiye IP-adresa v proksiliste: %s" % (len(open("socks.txt").readlines())))
 
 		print ("\nIdet zagruzka s raznykh zerkal ..")
 		for position, url in enumerate(nurls):
 			proxyget (url)
-			print("Zavershennyye zagruzki: (%s/%s)\nTekushchiye IP-adresa v proksilisterent IPs in proxylist: %s" % (position+1, len(nurls), len(open("proxy.txt").readlines())))
+			print("Zavershennyye zagruzki: (%s/%s)\nTekushchiye IP-adresa v proksilisterent IPs in proxylist: %s" % (position+1, len(nurls), len(open("socks.txt").readlines())))
 
 		proxylist() # dopo esegue questa funzione che setta meglio la lista
 
